@@ -1,0 +1,27 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // We'll set this in Render later
+}
+
+model Leads {
+  id                Int      @id @default(autoincrement())
+  campaign          String   // Fair Pay, PCP, DPF, Diesel, etc.
+  subCampaign       String?  // Morrisons, Sainsburys, BMW, Volvo, etc.
+  firstName         String
+  lastName          String
+  email             String
+  phone             String
+  futureMarketing   Boolean
+  privacyPolicy     Boolean
+  address           String
+  dateOfBirth       DateTime
+  gender            String?  // optional
+  stillWorkAtStore  String?  // optional
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
