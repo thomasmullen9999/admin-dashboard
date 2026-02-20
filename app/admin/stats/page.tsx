@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // Mock lead data with dates
 const MOCK_LEADS = [
@@ -344,448 +345,454 @@ export default function StatsPage() {
     totalLeads > 0 ? ((soldLeads / totalLeads) * 100).toFixed(1) : "0";
 
   return (
-    <div>
-      <div style={{ marginBottom: 32 }}>
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: textColor,
-            margin: "0 0 8px 0",
-          }}
-        >
-          📊 Lead Statistics
-        </h1>
-        <p
-          style={{
-            fontSize: 15,
-            color: darkMode ? "#94a3b8" : "#64748b",
-            margin: 0,
-          }}
-        >
-          Comprehensive overview of your lead performance across all campaigns
-        </p>
-      </div>
-
-      {/* Period Selector */}
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          marginBottom: 28,
-          padding: 4,
-          backgroundColor: headerBg,
-          borderRadius: 12,
-          border: `1px solid ${borderColor}`,
-          width: "fit-content",
-        }}
-      >
-        {[
-          { key: "today", label: "Today" },
-          { key: "7days", label: "Last 7 Days" },
-          { key: "30days", label: "Last 30 Days" },
-          { key: "all", label: "All Time" },
-        ].map((period) => (
-          <button
-            key={period.key}
-            onClick={() => setSelectedPeriod(period.key as any)}
+    <ProtectedRoute>
+      <div>
+        <div style={{ marginBottom: 32 }}>
+          <h1
             style={{
-              padding: "10px 20px",
-              borderRadius: 8,
-              border: "none",
-              background:
-                selectedPeriod === period.key
-                  ? "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
-                  : "transparent",
-              color: selectedPeriod === period.key ? "#ffffff" : textColor,
-              cursor: "pointer",
-              fontSize: 14,
-              fontWeight: 600,
-              transition: "all 0.15s ease",
-            }}
-          >
-            {period.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Overview Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 20,
-          marginBottom: 32,
-        }}
-      >
-        <div
-          style={{
-            padding: "24px",
-            background: darkMode ? "#1e293b" : "#ffffff",
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: darkMode ? "#94a3b8" : "#64748b",
-              marginBottom: 8,
-            }}
-          >
-            Total Leads
-          </div>
-          <div style={{ fontSize: 36, fontWeight: 700, color: textColor }}>
-            {totalLeads}
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: "24px",
-            background: darkMode ? "#1e293b" : "#ffffff",
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: darkMode ? "#94a3b8" : "#64748b",
-              marginBottom: 8,
-            }}
-          >
-            Sold
-          </div>
-          <div style={{ fontSize: 36, fontWeight: 700, color: "#22c55e" }}>
-            {soldLeads}
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: "24px",
-            background: darkMode ? "#1e293b" : "#ffffff",
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: darkMode ? "#94a3b8" : "#64748b",
-              marginBottom: 8,
-            }}
-          >
-            Nurture
-          </div>
-          <div style={{ fontSize: 36, fontWeight: 700, color: "#94a3b8" }}>
-            {nurtureLeads}
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: "24px",
-            background: darkMode ? "#1e293b" : "#ffffff",
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: darkMode ? "#94a3b8" : "#64748b",
-              marginBottom: 8,
-            }}
-          >
-            Conversion Rate
-          </div>
-          <div style={{ fontSize: 36, fontWeight: 700, color: "#6366f1" }}>
-            {conversionRate}%
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 24,
-          marginBottom: 32,
-        }}
-      >
-        {/* Pie Chart */}
-        <div
-          style={{
-            padding: "28px",
-            background: bgColor,
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <h3
-            style={{
-              fontSize: 18,
+              fontSize: 28,
               fontWeight: 700,
               color: textColor,
-              margin: "0 0 24px 0",
+              margin: "0 0 8px 0",
             }}
           >
-            Leads by Campaign
-          </h3>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <PieChart data={pieChartData} darkMode={darkMode} />
-          </div>
-        </div>
-
-        {/* Bar Chart */}
-        <div
-          style={{
-            padding: "28px",
-            background: bgColor,
-            borderRadius: 16,
-            border: `1px solid ${borderColor}`,
-            boxShadow: darkMode
-              ? "0 4px 6px rgba(0,0,0,0.3)"
-              : "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <h3
+            📊 Lead Statistics
+          </h1>
+          <p
             style={{
-              fontSize: 18,
-              fontWeight: 700,
-              color: textColor,
-              margin: "0 0 24px 0",
-            }}
-          >
-            Campaign Performance
-          </h3>
-          <BarChart data={barChartData} darkMode={darkMode} />
-        </div>
-      </div>
-
-      {/* Campaign Details Table */}
-      <div
-        style={{
-          background: bgColor,
-          borderRadius: 16,
-          border: `1px solid ${borderColor}`,
-          overflow: "hidden",
-          boxShadow: darkMode
-            ? "0 4px 6px rgba(0,0,0,0.3)"
-            : "0 2px 8px rgba(0,0,0,0.05)",
-        }}
-      >
-        <div
-          style={{
-            padding: "24px 28px",
-            borderBottom: `1px solid ${borderColor}`,
-          }}
-        >
-          <h3
-            style={{
-              fontSize: 18,
-              fontWeight: 700,
-              color: textColor,
+              fontSize: 15,
+              color: darkMode ? "#94a3b8" : "#64748b",
               margin: 0,
             }}
           >
-            Campaign Breakdown
-          </h3>
+            Comprehensive overview of your lead performance across all campaigns
+          </p>
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ backgroundColor: headerBg }}>
-              <th
-                style={{
-                  padding: "16px 28px",
-                  textAlign: "left",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: darkMode ? "#94a3b8" : "#64748b",
-                  letterSpacing: "0.5px",
-                  borderBottom: `2px solid ${borderColor}`,
-                }}
-              >
-                Campaign
-              </th>
-              <th
-                style={{
-                  padding: "16px 28px",
-                  textAlign: "center",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: darkMode ? "#94a3b8" : "#64748b",
-                  letterSpacing: "0.5px",
-                  borderBottom: `2px solid ${borderColor}`,
-                }}
-              >
-                Total Leads
-              </th>
-              <th
-                style={{
-                  padding: "16px 28px",
-                  textAlign: "center",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: darkMode ? "#94a3b8" : "#64748b",
-                  letterSpacing: "0.5px",
-                  borderBottom: `2px solid ${borderColor}`,
-                }}
-              >
-                Sold
-              </th>
-              <th
-                style={{
-                  padding: "16px 28px",
-                  textAlign: "center",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: darkMode ? "#94a3b8" : "#64748b",
-                  letterSpacing: "0.5px",
-                  borderBottom: `2px solid ${borderColor}`,
-                }}
-              >
-                Nurture
-              </th>
-              <th
-                style={{
-                  padding: "16px 28px",
-                  textAlign: "center",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: darkMode ? "#94a3b8" : "#64748b",
-                  letterSpacing: "0.5px",
-                  borderBottom: `2px solid ${borderColor}`,
-                }}
-              >
-                Conversion %
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(campaignStats).map(([campaign, stats], idx) => {
-              const convRate =
-                stats.total > 0
-                  ? ((stats.sold / stats.total) * 100).toFixed(1)
-                  : "0";
-              return (
-                <tr
-                  key={campaign}
+        {/* Period Selector */}
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 28,
+            padding: 4,
+            backgroundColor: headerBg,
+            borderRadius: 12,
+            border: `1px solid ${borderColor}`,
+            width: "fit-content",
+          }}
+        >
+          {[
+            { key: "today", label: "Today" },
+            { key: "7days", label: "Last 7 Days" },
+            { key: "30days", label: "Last 30 Days" },
+            { key: "all", label: "All Time" },
+          ].map((period) => (
+            <button
+              key={period.key}
+              onClick={() => setSelectedPeriod(period.key as any)}
+              style={{
+                padding: "10px 20px",
+                borderRadius: 8,
+                border: "none",
+                background:
+                  selectedPeriod === period.key
+                    ? "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
+                    : "transparent",
+                color: selectedPeriod === period.key ? "#ffffff" : textColor,
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 600,
+                transition: "all 0.15s ease",
+              }}
+            >
+              {period.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Overview Cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 20,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              padding: "24px",
+              background: darkMode ? "#1e293b" : "#ffffff",
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              Total Leads
+            </div>
+            <div style={{ fontSize: 36, fontWeight: 700, color: textColor }}>
+              {totalLeads}
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: "24px",
+              background: darkMode ? "#1e293b" : "#ffffff",
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              Sold
+            </div>
+            <div style={{ fontSize: 36, fontWeight: 700, color: "#22c55e" }}>
+              {soldLeads}
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: "24px",
+              background: darkMode ? "#1e293b" : "#ffffff",
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              Nurture
+            </div>
+            <div style={{ fontSize: 36, fontWeight: 700, color: "#94a3b8" }}>
+              {nurtureLeads}
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: "24px",
+              background: darkMode ? "#1e293b" : "#ffffff",
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: 8,
+              }}
+            >
+              Conversion Rate
+            </div>
+            <div style={{ fontSize: 36, fontWeight: 700, color: "#6366f1" }}>
+              {conversionRate}%
+            </div>
+          </div>
+        </div>
+
+        {/* Charts Row */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 24,
+            marginBottom: 32,
+          }}
+        >
+          {/* Pie Chart */}
+          <div
+            style={{
+              padding: "28px",
+              background: bgColor,
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: textColor,
+                margin: "0 0 24px 0",
+              }}
+            >
+              Leads by Campaign
+            </h3>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <PieChart data={pieChartData} darkMode={darkMode} />
+            </div>
+          </div>
+
+          {/* Bar Chart */}
+          <div
+            style={{
+              padding: "28px",
+              background: bgColor,
+              borderRadius: 16,
+              border: `1px solid ${borderColor}`,
+              boxShadow: darkMode
+                ? "0 4px 6px rgba(0,0,0,0.3)"
+                : "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: textColor,
+                margin: "0 0 24px 0",
+              }}
+            >
+              Campaign Performance
+            </h3>
+            <BarChart data={barChartData} darkMode={darkMode} />
+          </div>
+        </div>
+
+        {/* Campaign Details Table */}
+        <div
+          style={{
+            background: bgColor,
+            borderRadius: 16,
+            border: `1px solid ${borderColor}`,
+            overflow: "hidden",
+            boxShadow: darkMode
+              ? "0 4px 6px rgba(0,0,0,0.3)"
+              : "0 2px 8px rgba(0,0,0,0.05)",
+          }}
+        >
+          <div
+            style={{
+              padding: "24px 28px",
+              borderBottom: `1px solid ${borderColor}`,
+            }}
+          >
+            <h3
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: textColor,
+                margin: 0,
+              }}
+            >
+              Campaign Breakdown
+            </h3>
+          </div>
+
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ backgroundColor: headerBg }}>
+                <th
                   style={{
-                    backgroundColor: idx % 2 === 0 ? bgColor : headerBg,
+                    padding: "16px 28px",
+                    textAlign: "left",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: darkMode ? "#94a3b8" : "#64748b",
+                    letterSpacing: "0.5px",
+                    borderBottom: `2px solid ${borderColor}`,
                   }}
                 >
-                  <td
+                  Campaign
+                </th>
+                <th
+                  style={{
+                    padding: "16px 28px",
+                    textAlign: "center",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: darkMode ? "#94a3b8" : "#64748b",
+                    letterSpacing: "0.5px",
+                    borderBottom: `2px solid ${borderColor}`,
+                  }}
+                >
+                  Total Leads
+                </th>
+                <th
+                  style={{
+                    padding: "16px 28px",
+                    textAlign: "center",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: darkMode ? "#94a3b8" : "#64748b",
+                    letterSpacing: "0.5px",
+                    borderBottom: `2px solid ${borderColor}`,
+                  }}
+                >
+                  Sold
+                </th>
+                <th
+                  style={{
+                    padding: "16px 28px",
+                    textAlign: "center",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: darkMode ? "#94a3b8" : "#64748b",
+                    letterSpacing: "0.5px",
+                    borderBottom: `2px solid ${borderColor}`,
+                  }}
+                >
+                  Nurture
+                </th>
+                <th
+                  style={{
+                    padding: "16px 28px",
+                    textAlign: "center",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: darkMode ? "#94a3b8" : "#64748b",
+                    letterSpacing: "0.5px",
+                    borderBottom: `2px solid ${borderColor}`,
+                  }}
+                >
+                  Conversion %
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(campaignStats).map(([campaign, stats], idx) => {
+                const convRate =
+                  stats.total > 0
+                    ? ((stats.sold / stats.total) * 100).toFixed(1)
+                    : "0";
+                return (
+                  <tr
+                    key={campaign}
                     style={{
-                      padding: "20px 28px",
-                      borderBottom: `1px solid ${borderColor}`,
+                      backgroundColor: idx % 2 === 0 ? bgColor : headerBg,
                     }}
                   >
-                    <div
-                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    <td
+                      style={{
+                        padding: "20px 28px",
+                        borderBottom: `1px solid ${borderColor}`,
+                      }}
                     >
                       <div
                         style={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: "50%",
-                          backgroundColor:
-                            campaignColors[campaign] || "#9ca3af",
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: textColor,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
                         }}
                       >
-                        {campaign.charAt(0).toUpperCase() + campaign.slice(1)}
-                      </span>
-                    </div>
-                  </td>
-                  <td
-                    style={{
-                      padding: "20px 28px",
-                      textAlign: "center",
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: textColor,
-                      borderBottom: `1px solid ${borderColor}`,
-                    }}
-                  >
-                    {stats.total}
-                  </td>
-                  <td
-                    style={{
-                      padding: "20px 28px",
-                      textAlign: "center",
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: "#22c55e",
-                      borderBottom: `1px solid ${borderColor}`,
-                    }}
-                  >
-                    {stats.sold}
-                  </td>
-                  <td
-                    style={{
-                      padding: "20px 28px",
-                      textAlign: "center",
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: "#94a3b8",
-                      borderBottom: `1px solid ${borderColor}`,
-                    }}
-                  >
-                    {stats.nurture}
-                  </td>
-                  <td
-                    style={{
-                      padding: "20px 28px",
-                      textAlign: "center",
-                      fontSize: 15,
-                      fontWeight: 700,
-                      color: "#6366f1",
-                      borderBottom: `1px solid ${borderColor}`,
-                    }}
-                  >
-                    {convRate}%
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        <div
+                          style={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: "50%",
+                            backgroundColor:
+                              campaignColors[campaign] || "#9ca3af",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 600,
+                            color: textColor,
+                          }}
+                        >
+                          {campaign.charAt(0).toUpperCase() + campaign.slice(1)}
+                        </span>
+                      </div>
+                    </td>
+                    <td
+                      style={{
+                        padding: "20px 28px",
+                        textAlign: "center",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: textColor,
+                        borderBottom: `1px solid ${borderColor}`,
+                      }}
+                    >
+                      {stats.total}
+                    </td>
+                    <td
+                      style={{
+                        padding: "20px 28px",
+                        textAlign: "center",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: "#22c55e",
+                        borderBottom: `1px solid ${borderColor}`,
+                      }}
+                    >
+                      {stats.sold}
+                    </td>
+                    <td
+                      style={{
+                        padding: "20px 28px",
+                        textAlign: "center",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: "#94a3b8",
+                        borderBottom: `1px solid ${borderColor}`,
+                      }}
+                    >
+                      {stats.nurture}
+                    </td>
+                    <td
+                      style={{
+                        padding: "20px 28px",
+                        textAlign: "center",
+                        fontSize: 15,
+                        fontWeight: 700,
+                        color: "#6366f1",
+                        borderBottom: `1px solid ${borderColor}`,
+                      }}
+                    >
+                      {convRate}%
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

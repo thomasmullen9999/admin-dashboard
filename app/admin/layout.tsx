@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+
+// Inside the component, add:
 
 export default function AdminLayout({
   children,
@@ -10,6 +13,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const searchParams = useSearchParams();
   const group = searchParams.get("group") ?? "";
 
@@ -220,7 +224,9 @@ export default function AdminLayout({
               T
             </div>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>Hi, Thomas</div>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>
+                Hi, {user?.name}
+              </div>
               <div
                 style={{
                   fontSize: 13,
@@ -243,7 +249,18 @@ export default function AdminLayout({
             }}
           >
             <span>🔔</span>
-            <span>⚙️</span>
+            <button
+              onClick={logout}
+              style={{
+                fontSize: 13,
+                color: darkMode ? "#94a3b8" : "#64748b",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Sign out
+            </button>
           </div>
         </div>
 
